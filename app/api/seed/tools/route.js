@@ -71,11 +71,12 @@ function generateTools(count) {
 
 export async function POST(request) {
   try {
-    const { count = 1000 } = await request.json().catch(() => ({}));
-    const tools = generateTools(Math.min(count, 1000));
+    const { count = 10000 } = await request.json().catch(() => ({}));
+    // Allow up to 10000 per request for faster seeding
+    const tools = generateTools(Math.min(count, 10000));
 
     let inserted = 0;
-    const batchSize = 50;
+    const batchSize = 100;
 
     for (let i = 0; i < tools.length; i += batchSize) {
       const batch = tools.slice(i, i + batchSize);
