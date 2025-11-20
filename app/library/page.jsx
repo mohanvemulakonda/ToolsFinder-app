@@ -1,95 +1,101 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+'use client'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Library() {
-  const [library, setLibrary] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter()
+  const [library, setLibrary] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchLibrary();
-  }, []);
+    const userId = localStorage.getItem('userId')
+    if (!userId) {
+      router.push('/login')
+      return
+    }
+    fetchLibrary()
+  }, [router])
 
   const fetchLibrary = async () => {
     try {
-      // In production, get userId from auth context
-      const userId = localStorage.getItem('userId') || '1';
-      const res = await fetch(`/api/library?userId=${userId}`);
-      const data = await res.json();
-      setLibrary(data.library || []);
+      const userId = localStorage.getItem('userId')
+      const res = await fetch(`/api/library?userId=${userId}`)
+      const data = await res.json()
+      setLibrary(data.library || [])
     } catch (error) {
-      console.error('Failed to fetch library:', error);
+      console.error('Failed to fetch library:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const removeFromLibrary = async (toolId) => {
+  const removeFromLibrary = async (id) => {
     try {
-      const userId = localStorage.getItem('userId') || '1';
-      await fetch(`/api/library?userId=${userId}&toolId=${toolId}`, {
-        method: 'DELETE'
-      });
-      setLibrary(library.filter(item => item.tool_id !== toolId));
+      await fetch(`/api/library?id=${id}`, { method: 'DELETE' })
+      setLibrary(library.filter(item => item.id !== id))
     } catch (error) {
-      console.error('Failed to remove from library:', error);
+      console.error('Failed to remove from library:', error)
     }
-  };
+  }
 
   return (
-    <main className="container" style={{ padding: '2rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', color: '#000' }}>My Library</h1>
-        <Link href="/" style={{ color: '#2563EB', textDecoration: 'none' }}>
-          ← Back to Search
-        </Link>
-      </div>
+    <main className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">
+          My <span className="text-amber-500">Library</span>
+        </h1>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : library.length === 0 ? (
-        <p style={{ color: '#666' }}>Your library is empty. Start by searching for tools!</p>
-      ) : (
-        <div style={{ display: 'grid', gap: '1rem' }}>
-          {library.map((item) => (
-            <div
-              key={item.tool_id}
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.5rem',
-                padding: '1rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
+        {loading ? (
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+          </div>
+        ) : library.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-400 mb-4">Your library is empty</p>
+            <button
+              onClick={() => router.push('/')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition"
             >
-              <div>
-                <h3 style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{item.name}</h3>
-                <p style={{ color: '#666', fontSize: '0.875rem' }}>{item.category}</p>
-                {item.price && (
-                  <p style={{ color: '#2563EB', fontWeight: '500', marginTop: '0.25rem' }}>
-                    ${item.price}
+              Browse Tools
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {library.map((item) => (
+              <div
+                key={item.id}
+                className="bg-gray-900 rounded-lg p-6 border border-gray-800"
+              >
+                <h3 className="text-xl font-semibold text-amber-500 mb-2">
+                  {item.name}
+                </h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  {item.description || 'No description'}
+                </p>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="text-xs text-gray-500 block">{item.category}</span>
+                    {item.price && (
+                      <span className="text-lg font-bold text-blue-500">${item.price}</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => removeFromLibrary(item.id)}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition"
+                  >
+                    Remove
+                  </button>
+                </div>
+                {item.notes && (
+                  <p className="mt-3 text-sm text-gray-500 border-t border-gray-800 pt-3">
+                    Note: {item.notes}
                   </p>
                 )}
               </div>
-              <button
-                onClick={() => removeFromLibrary(item.tool_id)}
-                style={{
-                  background: '#ef4444',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </main>
-  );
+  )
 }
