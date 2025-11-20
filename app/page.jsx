@@ -1,9 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import ToolCard from './components/ToolCard'
 import SearchFilters from './components/SearchFilters'
 
 export default function Home() {
+  const router = useRouter()
   const [tools, setTools] = useState([])
   const [filteredTools, setFilteredTools] = useState([])
   const [search, setSearch] = useState('')
@@ -235,12 +237,15 @@ export default function Home() {
               </div>
 
               {/* List View Table */}
-              <div className="bg-white border border-gray-200 overflow-hidden relative z-10">
+              <div className="bg-white border border-gray-200 overflow-x-auto relative z-10">
                 {/* Table Header */}
-                <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 grid grid-cols-12 gap-4 text-sm font-medium text-gray-600">
-                  <div className="col-span-4">Tool Name</div>
+                <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 grid grid-cols-16 gap-2 text-xs font-medium text-gray-600 min-w-[1200px]">
+                  <div className="col-span-3">Part Number / Name</div>
                   <div className="col-span-2">Type</div>
                   <div className="col-span-2">Manufacturer</div>
+                  <div className="col-span-1 text-center">Ø (mm)</div>
+                  <div className="col-span-2">Substrate</div>
+                  <div className="col-span-2">Coating</div>
                   <div className="col-span-2">Price</div>
                   <div className="col-span-2 text-right">Action</div>
                 </div>
@@ -249,50 +254,88 @@ export default function Home() {
                 {filteredTools.map((tool) => (
                   <div
                     key={tool.id}
-                    className="border-b border-gray-100 px-4 py-3 grid grid-cols-12 gap-4 items-center hover:bg-gray-50 transition"
+                    className="border-b border-gray-100 px-4 py-3 grid grid-cols-16 gap-2 items-center hover:bg-gray-50 transition min-w-[1200px]"
                   >
-                    {/* Tool Name */}
-                    <div className="col-span-4">
+                    {/* Part Number / Name */}
+                    <div className="col-span-3">
+                      {tool.partNumber && (
+                        <span className="text-xs font-mono text-blue-600 block">{tool.partNumber}</span>
+                      )}
                       <h3 className="text-sm font-medium text-gray-900">{tool.name}</h3>
-                      {tool.description && (
-                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{tool.description}</p>
+                      {tool.application && (
+                        <span className="text-xs text-gray-400">{tool.application}</span>
                       )}
                     </div>
 
                     {/* Type/Category */}
                     <div className="col-span-2">
-                      <span className="text-sm text-gray-600">{tool.category || '-'}</span>
+                      <span className="text-sm text-gray-600">{tool.type || '-'}</span>
                     </div>
 
-                    {/* Manufacturer with Logo */}
+                    {/* Manufacturer/Supplier with Logo */}
                     <div className="col-span-2 flex items-center gap-2">
-                      {tool.brand && (
+                      {tool.supplier_name && (
                         <>
                           <img
-                            src={`/images/manufacturers/${tool.brand.toLowerCase().replace(/\s+/g, '-')}.png`}
-                            alt={tool.brand}
-                            className="w-6 h-6 object-contain"
+                            src={`/images/manufacturers/${tool.supplier_name.toLowerCase().replace(/\s+/g, '-')}.png`}
+                            alt={tool.supplier_name}
+                            className="w-5 h-5 object-contain"
                             onError={(e) => {
                               e.target.style.display = 'none'
                             }}
                           />
-                          <span className="text-sm text-gray-600">{tool.brand}</span>
+                          <span className="text-xs text-gray-600">{tool.supplier_name}</span>
                         </>
                       )}
-                      {!tool.brand && <span className="text-sm text-gray-400">-</span>}
+                      {!tool.supplier_name && <span className="text-xs text-gray-400">-</span>}
                     </div>
 
-                    {/* Price */}
-                    <div className="col-span-2">
-                      {tool.price ? (
-                        <span className="text-sm font-semibold text-blue-600">${Number(tool.price).toFixed(2)}</span>
+                    {/* Diameter */}
+                    <div className="col-span-1 text-center">
+                      {tool.diameter ? (
+                        <span className="text-sm font-mono text-gray-900">{Number(tool.diameter).toFixed(2)}</span>
                       ) : (
-                        <span className="text-xs text-gray-500">Request price</span>
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </div>
+
+                    {/* Corner Radius */}
+                    <div className="col-span-2">
+                      {tool.cornerRadius ? (
+                        <span className="text-xs text-gray-600">R{Number(tool.cornerRadius).toFixed(2)}</span>
+                      ) : (
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </div>
+
+                    {/* Thickness/Length */}
+                    <div className="col-span-2 flex items-center gap-1">
+                      {tool.thickness ? (
+                        <span className="text-xs text-gray-600">T{tool.thickness}mm</span>
+                      ) : tool.length ? (
+                        <span className="text-xs text-gray-600">L{tool.length}mm</span>
+                      ) : (
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </div>
+
+                    {/* Status */}
+                    <div className="col-span-2">
+                      {tool.has3DModel ? (
+                        <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5">3D</span>
+                      ) : (
+                        <span className="text-xs text-gray-400">-</span>
                       )}
                     </div>
 
                     {/* Action */}
-                    <div className="col-span-2 text-right">
+                    <div className="col-span-2 text-right flex gap-2 justify-end">
+                      <button
+                        onClick={() => router.push(`/tools/${tool.id}`)}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 text-xs font-medium transition"
+                      >
+                        View
+                      </button>
                       <button
                         onClick={() => addToLibrary(tool.id)}
                         disabled={addingToLibrary === tool.id}
@@ -301,7 +344,7 @@ export default function Home() {
                         {addingToLibrary === tool.id ? (
                           <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                         ) : (
-                          'Add to Library'
+                          'Add'
                         )}
                       </button>
                     </div>

@@ -45,88 +45,99 @@ export default function Login() {
   }
 
   return (
-    <main className="min-h-screen bg-black flex items-center justify-center p-4">
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">
-            <span className="text-blue-500">Tools</span>
-            <span className="text-white">Finder</span>
+          <h1 className="text-4xl font-light text-gray-900">
+            Find Your <span className="font-semibold text-blue-600">Account</span>
           </h1>
-          <p className="text-gray-400 mt-2">
-            {isRegister ? 'Create your account' : 'Sign in to your account'}
+          <p className="text-gray-500 mt-2">
+            {isRegister ? 'Create your account to get started' : 'Sign in to your account'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+        <div className="bg-white border border-gray-200 p-8">
           {error && (
-            <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 mb-4 text-sm">
               {error}
             </div>
           )}
 
-          {isRegister && (
+          <form onSubmit={handleSubmit}>
+            {isRegister && (
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-2">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full p-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+                  placeholder="Enter your name"
+                  required={isRegister}
+                />
+              </div>
+            )}
+
             <div className="mb-4">
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Name
+              <label className="block text-gray-700 text-sm font-medium mb-2">
+                Email
               </label>
               <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:outline-none"
-                required={isRegister}
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full p-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+                placeholder="Enter your email"
+                required
               />
             </div>
-          )}
 
-          <div className="mb-4">
-            <label className="block text-gray-300 text-sm font-medium mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:outline-none"
-              required
-            />
-          </div>
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                className="w-full p-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-300 text-sm font-medium mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded transition disabled:opacity-50"
-          >
-            {loading ? 'Loading...' : (isRegister ? 'Register' : 'Sign In')}
-          </button>
-
-          <div className="mt-4 text-center">
             <button
-              type="button"
-              onClick={() => setIsRegister(!isRegister)}
-              className="text-blue-500 hover:text-blue-400 text-sm"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 transition disabled:opacity-50"
             >
-              {isRegister ? 'Already have an account? Sign in' : "Don't have an account? Register"}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Loading...
+                </span>
+              ) : (
+                isRegister ? 'Create Account' : 'Sign In'
+              )}
             </button>
-          </div>
-        </form>
 
-        <div className="mt-4 text-center">
-          <Link href="/" className="text-gray-400 hover:text-white text-sm">
-            ← Back to Home
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setIsRegister(!isRegister)}
+                className="text-blue-600 hover:text-blue-700 text-sm transition"
+              >
+                {isRegister ? 'Already have an account? Sign in' : "Don't have an account? Register"}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="mt-6 text-center">
+          <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm transition">
+            ← Back to Search
           </Link>
         </div>
       </div>
