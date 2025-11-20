@@ -3,7 +3,25 @@ const pool = require('../../../../lib/db')
 
 // Tool data generators
 const brands = ['Sandvik', 'Kennametal', 'Iscar', 'Seco', 'Walter', 'Mitsubishi', 'Kyocera', 'Tungaloy', 'Sumitomo', 'Korloy', 'Taegutec', 'Ceratizit', 'Dormer', 'OSG', 'Widia'];
-const insertGrades = ['IC908', 'IC928', 'GC4225', 'GC4235', 'KC5010', 'KC5025', 'VP15TF', 'MC6025', 'AH120', 'PR1535'];
+// Real manufacturer grades from official catalogs
+const insertGrades = [
+  // Sandvik (from official catalog)
+  'GC4225', 'GC4235', 'GC4325', 'GC4335', 'GC1125', 'GC2015', 'GC3215', 'GC1115',
+  // Kennametal (from master catalog)
+  'KC5010', 'KC5025', 'KC5510', 'KC5525', 'KC9110', 'KC9125', 'KCP05', 'KCP10', 'KCP25', 'KCP30',
+  // Iscar (from iscar.com grade chart)
+  'IC807', 'IC907', 'IC908', 'IC928', 'IC8250', 'IC6015', 'IC6025', 'IC830', 'IC3028', 'IC806',
+  // Mitsubishi (from official catalog)
+  'VP15TF', 'MC6025', 'MC6125', 'MC6135', 'UE6110', 'US735', 'US7020', 'MP9015', 'UE6020',
+  // Tungaloy
+  'T9115', 'T9125', 'T9135', 'AH120', 'AH725', 'GT9530',
+  // Kyocera
+  'CA5525', 'CA6525', 'PR1535', 'TN60',
+  // Sumitomo
+  'AC6040S', 'AC6030S', 'AC820P', 'AC810P', 'AC630M',
+  // Korloy
+  'NC3010', 'NC3020', 'NC3030', 'PC5300', 'PC9030'
+];
 
 const categories = {
   'Turning Inserts': { prefix: ['CNMG', 'TNMG', 'VNMG', 'DNMG', 'WNMG', 'SNMG', 'CCMT', 'TCMT', 'VCMT', 'DCMT'], priceRange: [5, 45] },
