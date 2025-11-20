@@ -120,15 +120,15 @@ export default function Home() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search by name, category, or description..."
-                  className="w-full p-4 pl-12 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none text-lg"
+                  className="w-full p-4 pl-12 bg-black border border-gray-800 text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none text-lg"
                 />
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <button
                 type="submit"
-                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition text-lg"
+                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 font-semibold transition text-lg"
               >
                 Search
               </button>
@@ -139,8 +139,8 @@ export default function Home() {
 
       {/* Message Toast */}
       {message && (
-        <div className={`fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
-          message.type === 'error' ? 'bg-red-600' : 'bg-green-600'
+        <div className={`fixed top-20 right-4 px-6 py-3 shadow-lg z-50 ${
+          message.type === 'error' ? 'bg-red-600' : 'bg-blue-600'
         }`}>
           {message.text}
         </div>
