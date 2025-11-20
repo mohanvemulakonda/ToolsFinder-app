@@ -142,7 +142,34 @@ function generateRealisticCatalogData() {
     { base: 'TNMG', grades: ['CA5525', 'CA6525', 'PR1535'], sizes: ['160404', '160408', '220408'] },
   ];
 
-  const chipbreakers = ['PM', 'MM', 'MF', 'SM', 'RM', 'GM', 'QM', 'PR', 'MR', 'KM', 'MP', 'RP'];
+  // Real Sumitomo designations (from catalog)
+  const sumitomoInserts = [
+    { base: 'CNMG', grades: ['AC6040S', 'AC6030S', 'AC820P', 'AC810P', 'AC630M'], sizes: ['120404', '120408', '120412', '160608', '160612'] },
+    { base: 'TNMG', grades: ['AC6040S', 'AC6030S', 'AC820P'], sizes: ['160404', '160408', '160412', '220408'] },
+    { base: 'SNMG', grades: ['AC6040S', 'AC630M', 'AC820P'], sizes: ['120404', '120408', '150612'] },
+  ];
+
+  // Real Tungaloy designations (from catalog)
+  const tungaloyInserts = [
+    { base: 'CNMG', grades: ['T9115', 'T9125', 'T9135', 'AH120', 'AH725', 'GT9530'], sizes: ['120404', '120408', '120412', '160612'] },
+    { base: 'TNMG', grades: ['T9115', 'T9125', 'AH120', 'AH725'], sizes: ['160404', '160408', '220408', '220412'] },
+    { base: 'DNMG', grades: ['T9115', 'T9125', 'AH120'], sizes: ['150404', '150408', '150608', '150612'] },
+  ];
+
+  // Real Korloy designations (from catalog)
+  const korloyInserts = [
+    { base: 'CNMG', grades: ['NC3010', 'NC3020', 'NC3030', 'PC5300', 'PC9030'], sizes: ['120404', '120408', '120412', '160612'] },
+    { base: 'TNMG', grades: ['NC3010', 'NC3020', 'PC5300'], sizes: ['160404', '160408', '160412'] },
+    { base: 'WNMG', grades: ['NC3010', 'NC3020', 'PC5300'], sizes: ['060404', '080408', '080412'] },
+  ];
+
+  // Real Dorian/generic designations
+  const dorianInserts = [
+    { base: 'CNMG', grades: ['DGC25', 'DGC35', 'DGC15'], sizes: ['431', '432', '433', '543'] },
+    { base: 'TNMG', grades: ['DGC25', 'DGC35'], sizes: ['331', '332', '333', '432'] },
+  ];
+
+  const chipbreakers = ['PM', 'MM', 'MF', 'SM', 'RM', 'GM', 'QM', 'PR', 'MR', 'KM', 'MP', 'RP', 'SS', 'EF', 'EX', 'MU', 'EM', 'EG', 'NS', 'NF', 'NM', 'TM', 'TS', 'TF'];
 
   const products = [];
 
@@ -237,6 +264,70 @@ function generateRealisticCatalogData() {
           category: 'Turning Inserts',
           brand: 'Kyocera',
           price: (Math.random() * 28 + 9).toFixed(2)
+        });
+      });
+    });
+  });
+
+  // Generate Sumitomo products
+  sumitomoInserts.forEach(insert => {
+    insert.grades.forEach(grade => {
+      insert.sizes.forEach(size => {
+        const chipbreaker = chipbreakers[Math.floor(Math.random() * chipbreakers.length)];
+        products.push({
+          name: `${insert.base} ${size}-${chipbreaker} ${grade}`,
+          description: `Sumitomo ${insert.base} insert. Grade ${grade} with Super FF coating technology.`,
+          category: 'Turning Inserts',
+          brand: 'Sumitomo',
+          price: (Math.random() * 35 + 12).toFixed(2)
+        });
+      });
+    });
+  });
+
+  // Generate Tungaloy products
+  tungaloyInserts.forEach(insert => {
+    insert.grades.forEach(grade => {
+      insert.sizes.forEach(size => {
+        const chipbreaker = chipbreakers[Math.floor(Math.random() * chipbreakers.length)];
+        products.push({
+          name: `${insert.base} ${size}-${chipbreaker} ${grade}`,
+          description: `Tungaloy ${insert.base} insert. Grade ${grade} for high-efficiency machining.`,
+          category: 'Turning Inserts',
+          brand: 'Tungaloy',
+          price: (Math.random() * 32 + 10).toFixed(2)
+        });
+      });
+    });
+  });
+
+  // Generate Korloy products
+  korloyInserts.forEach(insert => {
+    insert.grades.forEach(grade => {
+      insert.sizes.forEach(size => {
+        const chipbreaker = chipbreakers[Math.floor(Math.random() * chipbreakers.length)];
+        products.push({
+          name: `${insert.base} ${size}-${chipbreaker} ${grade}`,
+          description: `Korloy ${insert.base} insert. Grade ${grade} for steel and stainless steel.`,
+          category: 'Turning Inserts',
+          brand: 'Korloy',
+          price: (Math.random() * 25 + 8).toFixed(2)
+        });
+      });
+    });
+  });
+
+  // Generate Dorian products
+  dorianInserts.forEach(insert => {
+    insert.grades.forEach(grade => {
+      insert.sizes.forEach(size => {
+        const chipbreaker = chipbreakers[Math.floor(Math.random() * chipbreakers.length)];
+        products.push({
+          name: `${insert.base}${size}${chipbreaker} ${grade}`,
+          description: `Dorian ${insert.base} insert. Grade ${grade} economical option for general machining.`,
+          category: 'Turning Inserts',
+          brand: 'Dorian',
+          price: (Math.random() * 20 + 6).toFixed(2)
         });
       });
     });
