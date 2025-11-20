@@ -1,128 +1,70 @@
-'use client';
-
-import { useState } from 'react';
+'use client'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const [query, setQuery] = useState('');
-  const [tools, setTools] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [tools, setTools] = useState([])
+  const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  const searchTools = async (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+  useEffect(() => {
+    fetchTools()
+  }, [])
 
-    setLoading(true);
+  const fetchTools = async (query = '') => {
+    setLoading(true)
     try {
-      const res = await fetch(`/api/tools?search=${encodeURIComponent(query)}`);
-      const data = await res.json();
-      setTools(data.tools || []);
-    } catch (error) {
-      console.error('Search failed:', error);
-    } finally {
-      setLoading(false);
+      const url = query ? '/api/tools?search=' + query : '/api/tools'
+      const res = await fetch(url)
+      const data = await res.json()
+      setTools(data.tools || [])
+    } catch (err) {
+      console.error('Error fetching tools:', err)
     }
-  };
+    setLoading(false)
+  }
 
-  const addToLibrary = async (toolId) => {
-    try {
-      await fetch('/api/library', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ toolId })
-      });
-      alert('Added to library!');
-    } catch (error) {
-      console.error('Failed to add to library:', error);
-    }
-  };
+  const handleSearch = (e) => {
+    e.preventDefault()
+    fetchTools(search)
+  }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="bg-[#000000] text-white py-8 border-b border-[#111827]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-light mb-2">
-            Tools<span className="font-semibold">Finder</span><span className="font-semibold text-[#f59e0b]">.io</span>
-          </h1>
-          <p className="text-[#9CA3AF] text-sm uppercase tracking-wider font-light">
-            connect.discover.build
-          </p>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-[#111827] mb-2">
-            Search Industrial Tools
-          </h2>
-          <p className="text-[#6B7280] text-sm">
-            Find tools from verified suppliers worldwide
-          </p>
-        </div>
-
-        {/* Search Form */}
-        <form onSubmit={searchTools} className="mb-12">
-          <div className="flex gap-3">
+    <main className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-8">
+          <span className="text-blue-500">Tools</span>Finder
+        </h1>
+        <form onSubmit={handleSearch} className="mb-8">
+          <div className="flex gap-4">
             <input
               type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for tools..."
-              className="flex-1 px-4 py-3 border-2 border-[#E2E8F0] bg-white text-[#111827] placeholder-[#9CA3AF] focus:border-[#2563EB] focus:outline-none transition-colors duration-300"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search tools..."
+              className="flex-1 p-3 rounded bg-gray-900 border border-gray-700 text-white"
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-8 py-3 bg-[#000000] text-white font-medium hover:bg-[#2563EB] transition-all duration-300 disabled:opacity-50"
-            >
-              {loading ? 'Searching...' : 'Search'}
+            <button type="submit" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded font-semibold">
+              Search
             </button>
           </div>
         </form>
-
-        {/* Results */}
-        <div className="space-y-4">
-          {tools.map((tool) => (
-            <div
-              key={tool.id}
-              className="bg-white border border-[#E2E8F0] p-6 flex justify-between items-center hover:border-[#2563EB] transition-colors duration-300"
-            >
-              <div>
-                <h3 className="text-lg font-semibold text-[#111827] mb-1">
-                  {tool.name}
-                </h3>
-                <p className="text-sm text-[#6B7280]">
-                  {tool.category} {tool.supplier && `• ${tool.supplier}`}
-                </p>
-                {tool.description && (
-                  <p className="text-sm text-[#9CA3AF] mt-2">{tool.description}</p>
-                )}
+        {loading ? (
+          <p className="text-center text-gray-400">Loading...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tools.map((tool) => (
+              <div key={tool.id} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+                <h3 className="text-xl font-semibold text-amber-500">{tool.name}</h3>
+                <p className="text-gray-400 mt-2">{tool.description}</p>
+                <div className="mt-4 flex justify-between items-center">
+                  <span className="text-sm text-gray-500">{tool.category}</span>
+                  <span className="text-lg font-bold text-blue-500">${tool.price}</span>
+                </div>
               </div>
-              <button
-                onClick={() => addToLibrary(tool.id)}
-                className="px-4 py-2 bg-[#f59e0b] text-[#000000] font-medium hover:bg-[#d97706] transition-colors duration-300"
-              >
-                Add to Library
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {tools.length === 0 && query && !loading && (
-          <div className="text-center py-12">
-            <p className="text-[#6B7280]">No tools found. Try a different search term.</p>
+            ))}
           </div>
         )}
-
-        {tools.length === 0 && !query && (
-          <div className="text-center py-12 bg-white border border-[#E2E8F0]">
-            <svg className="w-12 h-12 text-[#9CA3AF] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <p className="text-[#6B7280] font-light">Enter a search term to find tools</p>
-          </div>
-        )}
-      </main>
-    </div>
-  );
+      </div>
+    </main>
+  )
 }

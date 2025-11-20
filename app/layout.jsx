@@ -1,8 +1,8 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'ToolsFinder - Find Industrial Tools',
-  description: 'Search and discover industrial tools from verified suppliers',
+  title: 'ToolsFinder',
+  description: 'Find and manage your tools',
 }
 
 export default function RootLayout({ children }) {

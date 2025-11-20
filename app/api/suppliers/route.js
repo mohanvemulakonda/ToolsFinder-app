@@ -1,29 +1,27 @@
-import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { NextResponse } from 'next/server'
+const pool = require('../../../lib/db')
 
 export async function GET() {
   try {
-    const [rows] = await pool.execute('SELECT * FROM suppliers');
-    return NextResponse.json({ suppliers: rows });
+    const [suppliers] = await pool.execute('SELECT * FROM suppliers')
+    return NextResponse.json({ suppliers })
   } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json({ error: 'Failed to fetch suppliers', suppliers: [] }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { name, email, phone, address } = body;
-
+    const body = await request.json()
+    const { name, email, phone, address, website } = body
+    
     const [result] = await pool.execute(
-      'INSERT INTO suppliers (name, email, phone, address) VALUES (?, ?, ?, ?)',
-      [name, email, phone, address]
-    );
-
-    return NextResponse.json({ id: result.insertId, message: 'Supplier created' });
+      'INSERT INTO suppliers (name, email, phone, address, website) VALUES (?, ?, ?, ?, ?)',
+      [name, email, phone, address, website]
+    )
+    
+    return NextResponse.json({ id: result.insertId, message: 'Supplier created' })
   } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json({ error: 'Failed to create supplier' }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
