@@ -11,10 +11,10 @@ export async function GET(request) {
     }
     
     const [items] = await pool.execute(
-      `SELECT l.*, t.name, t.description, t.category, t.price 
-       FROM library l 
-       JOIN tools t ON l.tool_id = t.id 
-       WHERE l.user_id = ?`,
+      `SELECT l.*, t.name, t.description, t.category, t.price
+       FROM LibraryItem l
+       JOIN Tool t ON l.toolId = t.id
+       WHERE l.userId = ?`,
       [userId]
     )
     
@@ -30,7 +30,7 @@ export async function POST(request) {
     const { user_id, tool_id, notes } = body
     
     const [result] = await pool.execute(
-      'INSERT INTO library (user_id, tool_id, notes) VALUES (?, ?, ?)',
+      'INSERT INTO LibraryItem (userId, toolId, notes) VALUES (?, ?, ?)',
       [user_id, tool_id, notes || null]
     )
     
@@ -45,7 +45,7 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
     
-    await pool.execute('DELETE FROM library WHERE id = ?', [id])
+    await pool.execute('DELETE FROM LibraryItem WHERE id = ?', [id])
     return NextResponse.json({ message: 'Removed from library' })
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

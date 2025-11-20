@@ -6,7 +6,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
     
-    let query = 'SELECT * FROM tools'
+    let query = 'SELECT * FROM Tool'
     let params = []
     
     if (search) {
@@ -27,7 +27,7 @@ export async function POST(request) {
     const { name, description, category, brand, price, image_url } = body
     
     const [result] = await pool.execute(
-      'INSERT INTO tools (name, description, category, brand, price, image_url) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO Tool (name, description, category, brand, price, image_url) VALUES (?, ?, ?, ?, ?, ?)',
       [name, description, category, brand, price, image_url]
     )
     

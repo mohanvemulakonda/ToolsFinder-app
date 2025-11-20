@@ -13,7 +13,7 @@ export async function POST(request) {
     if (action === 'register') {
       const hashedPassword = await bcrypt.hash(password, 10)
       const [result] = await pool.execute(
-        'INSERT INTO users (email, password, name) VALUES (?, ?, ?)',
+        'INSERT INTO User (email, password, name) VALUES (?, ?, ?)',
         [email, hashedPassword, name]
       )
       const token = jwt.sign({ userId: result.insertId, email }, JWT_SECRET)
@@ -21,7 +21,7 @@ export async function POST(request) {
     }
     
     if (action === 'login') {
-      const [users] = await pool.execute('SELECT * FROM users WHERE email = ?', [email])
+      const [users] = await pool.execute('SELECT * FROM User WHERE email = ?', [email])
       if (users.length === 0) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 })
       }
