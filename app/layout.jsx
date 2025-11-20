@@ -5,6 +5,9 @@ import Footer from './components/Footer'
 export const metadata = {
   title: 'ToolsFinder',
   description: 'Find and manage your industrial tools',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }) {
